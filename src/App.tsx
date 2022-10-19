@@ -1,9 +1,16 @@
-import { Button, Box, CircularProgress, CircularProgressLabel, Container, IconButton, Flex } from '@chakra-ui/react'
+import { Button, Box, CircularProgress, CircularProgressLabel, Container, IconButton, Flex, useColorMode } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { intervalToDuration } from 'date-fns'
 import { Pause, Play, Repeat } from 'phosphor-react'
+import sound from './assets/sounds/Timer-Bell.wav'
+
+
+
+let MY_INTERVAL_ID = 0
+let MY_REST_TIME_ID = 0
 
 export const App = () => {
+  const { colorMode, toggleColorMode } = useColorMode()
 
   const [countdownTime, setCountdownTime] = useState(1500)
   const [restTimeCountdown, setRestTimeCountdown] = useState(300)
@@ -29,16 +36,20 @@ export const App = () => {
     end: restTimeCountdown * 1000
   })
 
-  let myIntervalID = 0
-  let myRestTimeID = 0
+
+  const audio = new Audio(sound)
+
+
+  const playSound = () => audio.play()
+
 
   const countdownTimer = () => {
     setTimesIsRunning(true)
-    myIntervalID = setInterval(() => {
+    MY_INTERVAL_ID = setInterval(() => {
       setCountdownTime(prevState => countdownTime === 0 ? 0 : prevState - 1)
       setPercentualTime(prevState => prevState + 0.066667)
     }, 1000)
-    return setCountdownIntervalID(myIntervalID)
+    return setCountdownIntervalID(MY_INTERVAL_ID)
   }
 
   function stopCountdown() {
@@ -48,10 +59,10 @@ export const App = () => {
 
 
   const restTime = () => {
-    myRestTimeID = setInterval(() => {
+    MY_REST_TIME_ID = setInterval(() => {
       setRestTimeCountdown(prevState => restTimeCountdown === 0 ? 0 : prevState - 1)
     }, 1000)
-    return setRestTimeIntervalID(myRestTimeID)
+    return setRestTimeIntervalID(MY_REST_TIME_ID)
   }
 
   function stopRestTimeCountdown() {
@@ -87,6 +98,7 @@ export const App = () => {
 
     if (restTimeCountdown == 300 && countdownTime === 0) {
       restTime()
+      playSound()
       setRestTimeCountdown(300)
     }
 
@@ -136,7 +148,7 @@ export const App = () => {
           icon={<Repeat size={64} />}
           onClick={() => {
             stopCountdown()
-            setCountdownTime(1500)
+            setCountdownTime(2)
             setRestTimeCountdown(300)
             setTimesIsPaused(true)
             setPercentualTime(0)
