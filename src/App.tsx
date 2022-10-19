@@ -1,10 +1,12 @@
-import { Button, Box, CircularProgress, CircularProgressLabel, Container, IconButton, Flex, useColorMode } from '@chakra-ui/react'
+import { Box, Container, Flex, useColorMode } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { intervalToDuration } from 'date-fns'
 import { Pause, Play, Repeat } from 'phosphor-react'
+
 import sound from './assets/sounds/Timer-Bell.wav'
 
-
+import { CircularCountdownProgress } from './components/CircularCountdownProgress'
+import { ControlButton } from './components/ControlButton'
 
 let MY_INTERVAL_ID = 0
 let MY_REST_TIME_ID = 0
@@ -36,9 +38,7 @@ export const App = () => {
     end: restTimeCountdown * 1000
   })
 
-
   const audio = new Audio(sound)
-
 
   const playSound = () => audio.play()
 
@@ -56,7 +56,6 @@ export const App = () => {
     setTimesIsRunning(false)
     clearInterval(countdownIntervalID)
   }
-
 
   const restTime = () => {
     MY_REST_TIME_ID = setInterval(() => {
@@ -115,37 +114,35 @@ export const App = () => {
   return (
     <Container display='flex' h='85vh' justifyContent='center' flexDirection='column' alignItems='center'>
 
-      <CircularProgress size='15.25rem' w='max-content' value={percentualTime} >
-        <CircularProgressLabel>{percentualTime.toFixed(0)}%</CircularProgressLabel>
-      </CircularProgress>
+      <CircularCountdownProgress percentualTime={percentualTime} />
 
-      <Box fontSize='7xl'>{timesIsPaused ? countdownTimeFormated : restCountdownTimeFormated + 'p'}</Box>
+      <Box fontSize='8xl'>
+        {timesIsPaused ? countdownTimeFormated : restCountdownTimeFormated + 'p'}
+      </Box>
 
-      <Flex gap='2rem '>
-        <IconButton
-          variant='unstyled'
-          aria-label='Play Timer Countdown'
+      <Flex gap='2rem'>
+
+        <ControlButton
           icon={<Play size={64} />}
+          ariaLabel='Play Timer Countdown'
           disabled={timesIsRunning}
           onClick={() => {
             countdownTimer()
           }}
         />
 
-        <IconButton
-          variant='unstyled'
-          aria-label='Pause Timer Countdown'
+        <ControlButton
           icon={<Pause size={64} />}
+          ariaLabel='Pause Timer Countdown'
           disabled={!timesIsRunning}
           onClick={() => {
             stopCountdown()
           }}
         />
 
-        <IconButton
-          variant='unstyled'
-          aria-label='Reset Timer'
+        <ControlButton
           icon={<Repeat size={64} />}
+          ariaLabel='Reset Timer'
           onClick={() => {
             stopCountdown()
             setCountdownTime(2)
@@ -154,7 +151,6 @@ export const App = () => {
             setPercentualTime(0)
           }}
         />
-
       </Flex>
     </Container>
   )
