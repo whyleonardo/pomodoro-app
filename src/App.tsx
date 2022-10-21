@@ -4,7 +4,7 @@ import { intervalToDuration } from 'date-fns'
 import { ArrowCounterClockwise, Pause, Play } from 'phosphor-react'
 import TomatoIcon from './assets/images/tomato-timer.png'
 
-import sound from './assets/sounds/Timer-bell.wav'
+import sound from './assets/sounds/Timer-Bell.wav'
 
 import { ControlButton } from './components/ControlButton'
 import { Header } from './components/Header'
