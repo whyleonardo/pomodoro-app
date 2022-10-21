@@ -1,18 +1,20 @@
-import { Box, Container, Flex, useColorMode } from '@chakra-ui/react'
+import { Box, Container, Flex, Heading, Image, Text, VStack, InputGroup, Input, InputRightElement } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { intervalToDuration } from 'date-fns'
-import { Pause, Play, Repeat } from 'phosphor-react'
+import { ArrowCounterClockwise, Pause, Play } from 'phosphor-react'
+import TomatoIcon from './assets/images/tomato-timer.png'
 
-import sound from './assets/sounds/Timer-Bell.wav'
+import sound from './assets/sounds/Timer-bell.wav'
 
-import { CircularCountdownProgress } from './components/CircularCountdownProgress'
 import { ControlButton } from './components/ControlButton'
+import { Header } from './components/Header'
+import { TomatoStep } from './components/TomatoStep/index'
+import { stepInfos } from './components/utils/StepInfos'
 
 let MY_INTERVAL_ID = 0
 let MY_REST_TIME_ID = 0
 
 export const App = () => {
-  const { colorMode, toggleColorMode } = useColorMode()
 
   const [countdownTime, setCountdownTime] = useState(1500)
   const [restTimeCountdown, setRestTimeCountdown] = useState(300)
@@ -112,46 +114,258 @@ export const App = () => {
   }, [countdownTime, restTimeCountdown])
 
   return (
-    <Container display='flex' h='85vh' justifyContent='center' flexDirection='column' alignItems='center'>
+    <>
+      <Header />
 
-      <CircularCountdownProgress percentualTime={percentualTime} />
+      <Container
+        display='flex'
+        h='100%'
+        bgImage='bgGradient'
+        // justifyContent='center'
+        flexDirection='column'
+        alignItems='center'
+      >
+        <VStack
+          mt='3.10rem'
+          position='relative'
+        >
+          <Flex
+            alignItems='center'
+          >
+            <Heading
+              fontWeight='800'
+              color='brand.400'
+              fontSize='30'
+              whiteSpace='nowrap'
+              fontFamily='nunito'
+              textTransform='uppercase'
+            >
+              Tomato Focus
+            </Heading>
 
-      <Box fontSize='8xl'>
-        {timesIsPaused ? countdownTimeFormated : restCountdownTimeFormated + 'p'}
-      </Box>
+            <Image src={TomatoIcon} />
+          </Flex>
 
-      <Flex gap='2rem'>
+          <Text
+            color='white'
+            whiteSpace='nowrap'
+            fontSize='11'
+            fontWeight='500'
+            position='absolute'
+            bottom='0'
+          >
+            Gerencie o seu Tempo de forma produtiva
+          </Text>
+        </VStack>
 
-        <ControlButton
-          icon={<Play size={64} />}
-          ariaLabel='Play Timer Countdown'
-          disabled={timesIsRunning}
-          onClick={() => {
-            countdownTimer()
-          }}
-        />
+        <VStack mt='4.90rem'>
+          <Text color='white'>
+            Defina a sua tarefa:
+          </Text>
 
-        <ControlButton
-          icon={<Pause size={64} />}
-          ariaLabel='Pause Timer Countdown'
-          disabled={!timesIsRunning}
-          onClick={() => {
-            stopCountdown()
-          }}
-        />
+          <InputGroup>
+            <Input
+              bg='white'
+              fontFamily='heading'
+              rounded='1rem'
+              w='18.3rem'
+              placeholder='Escrever um artigo sobre...'
+            />
+            < InputRightElement
+              children={<Play size={16} weight='fill' color='rgba(99, 91, 91, 0.2)' />}
+            />
+          </InputGroup>
+        </VStack>
 
-        <ControlButton
-          icon={<Repeat size={64} />}
-          ariaLabel='Reset Timer'
-          onClick={() => {
-            stopCountdown()
-            setCountdownTime(2)
-            setRestTimeCountdown(300)
-            setTimesIsPaused(true)
-            setPercentualTime(0)
-          }}
-        />
-      </Flex>
-    </Container>
+        <Text
+          mt='2.25rem'
+          rounded='full'
+          bg='brand.400'
+          fontSize='96'
+          px='6'
+          py='2'
+          color='white'
+          fontFamily='heading'
+          fontWeight='800'
+          lineHeight='none'
+        >
+          {
+            timesIsPaused
+              ? countdownTimeFormated
+              : restCountdownTimeFormated + 'p'
+          }
+        </Text>
+
+        <Flex mt='3rem' color='white' gap='2rem'>
+          <ControlButton
+            icon={<ArrowCounterClockwise size={64} weight="bold" />}
+            ariaLabel='Reset Timer'
+            onClick={() => {
+              stopCountdown()
+              setCountdownTime(2)
+              setRestTimeCountdown(300)
+              setTimesIsPaused(true)
+              setPercentualTime(0)
+            }}
+          />
+
+          <ControlButton
+            icon={<Play size={64} weight="fill" />}
+            ariaLabel='Play Timer Countdown'
+            disabled={timesIsRunning}
+            onClick={() => {
+              countdownTimer()
+            }}
+          />
+
+          <ControlButton
+            icon={<Pause size={64} weight="fill" />}
+            ariaLabel='Pause Timer Countdown'
+            disabled={!timesIsRunning}
+            onClick={() => {
+              stopCountdown()
+            }}
+          />
+        </Flex>
+
+        <Text
+          mt='4.40rem'
+          fontWeight='800'
+          rounded='full'
+          fontSize='0.9rem'
+          textTransform='uppercase'
+          bg='brand.400'
+          px='6'
+          py='4'
+          color='white'
+          fontFamily='heading'
+          lineHeight='none'
+        >
+          Como funciona?
+        </Text>
+
+        {/* 
+        <VStack
+          px='6'
+          w='90%'
+          mt='1.5rem'
+        >
+          <Box
+            alignSelf='center'
+            position='relative'
+          >
+            <TomatoStep />
+
+            <Box
+              position='absolute'
+              w='28'
+              h='0.0625rem'
+              bg='white'
+              transform='auto'
+              rotate='55'
+              right='-30'
+              zIndex='-1'
+            />
+          </Box>
+
+          <Box
+            alignSelf='end'
+            position='relative'
+          >
+            <TomatoStep />
+
+            <Box
+              position='absolute'
+              w='28'
+              h='0.0625rem'
+              bg='white'
+              transform='auto'
+              rotate='-55'
+              left='-30'
+              zIndex='-1'
+            />
+          </Box>
+
+          <Box
+            alignSelf='center'
+            position='relative'
+          >
+            <TomatoStep />
+
+            <Box
+              position='absolute'
+              w='28'
+              h='0.0625rem'
+              bg='white'
+              transform='auto'
+              rotate='55'
+              right='-18'
+              zIndex='-1'
+            />
+          </Box>
+
+          <Box
+            alignSelf='end'
+            position='relative'
+          >
+            <TomatoStep />
+
+            <Box
+              position='absolute'
+              w='28'
+              h='0.0625rem'
+              bg='white'
+              transform='auto'
+              rotate='-55'
+              left='-18'
+              zIndex='-1'
+            />
+          </Box>
+
+          <Box
+            alignSelf='center'
+            position='relative'
+          >
+            <TomatoStep />
+          </Box>
+
+        </VStack> */}
+
+        <VStack
+          px='6'
+          w='90%'
+          mt='1.5rem'
+        >
+          {
+            stepInfos && stepInfos.map(step => (
+              <Box
+                alignSelf={step.stepAlign}
+                position='relative'
+              >
+                <TomatoStep stepId={step.stepId} description={step.description} />
+
+                <Box
+                  position='absolute'
+                  display={step.displayLine}
+                  w='28'
+                  h='0.0625rem'
+                  bg='green'
+                  transform='auto'
+                  rotate={step.rotate}
+                  right={step.right}
+                  left={step.left}
+                  zIndex='-1'
+                />
+              </Box>
+            ))
+          }
+
+
+        </VStack>
+
+
+
+      </Container>
+    </>
   )
 }
