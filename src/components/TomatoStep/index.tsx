@@ -2,8 +2,8 @@ import { Flex, Box, Image, Heading, Text, VStack } from '@chakra-ui/react'
 import Tomato from '../../assets/images/tomato.png'
 
 interface TomatoStepProps {
+  stepId: number
   description: string
-  stepId: string
 }
 
 
